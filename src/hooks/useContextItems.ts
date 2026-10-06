@@ -8,6 +8,7 @@ import { makeId } from "../lib/sessionUtils";
 export interface UseContextItemsResult {
 	contextItems: ContextItem[];
 	setContextItems: React.Dispatch<React.SetStateAction<ContextItem[]>>;
+	contextItemsRef: React.MutableRefObject<ContextItem[]>;
 	targetNoteName: string | null;
 	setTargetNoteName: React.Dispatch<React.SetStateAction<string | null>>;
 	handleToggleActiveNote: () => void;
@@ -24,10 +25,17 @@ export function useContextItems(
 	setWasTruncated: (v: boolean) => void,
 	onCloseContextPicker: () => void,
 ): UseContextItemsResult {
-	const [contextItems, setContextItems] = useState<ContextItem[]>([]);
+	const [contextItems, setContextItemsState] = useState<ContextItem[]>([]);
 	const [targetNoteName, setTargetNoteName] = useState<string | null>(null);
 	const contextItemsRef = useRef<ContextItem[]>([]);
-	contextItemsRef.current = contextItems;
+	const setContextItems = useCallback<
+		React.Dispatch<React.SetStateAction<ContextItem[]>>
+	>((next) => {
+		const resolved =
+			typeof next === "function" ? next(contextItemsRef.current) : next;
+		contextItemsRef.current = resolved;
+		setContextItemsState(resolved);
+	}, []);
 
 	// Track last focused markdown leaf
 	const lastMarkdownLeafRef = useRef<WorkspaceLeaf | null>(null);
@@ -143,6 +151,7 @@ export function useContextItems(
 	return {
 		contextItems,
 		setContextItems,
+		contextItemsRef,
 		targetNoteName,
 		setTargetNoteName,
 		handleToggleActiveNote,

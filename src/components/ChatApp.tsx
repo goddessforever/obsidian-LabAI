@@ -608,6 +608,7 @@ const ChatApp: React.FC<ChatAppProps> = ({
 	const {
 		contextItems,
 		setContextItems,
+		contextItemsRef,
 		targetNoteName,
 		setTargetNoteName,
 		handleToggleActiveNote,
@@ -639,9 +640,7 @@ const ChatApp: React.FC<ChatAppProps> = ({
 		setContextTokenCount,
 		setContextItems,
 		messagesRef,
-		contextItemsRef: { current: contextItems } as React.MutableRefObject<
-			ContextItem[]
-		>,
+		contextItemsRef,
 		lastMarkdownLeafRef: useRef<WorkspaceLeaf | null>(null),
 		getRuntime,
 		patchRuntime,

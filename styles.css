@@ -2472,7 +2472,6 @@
 }
 
 /* ── New styles for context tracking, tokens, editing, renaming ─────────── */
-
 /* Show actions on user bubble hover too */
 .chat-bubble-user:hover .chat-bubble-actions-user {
 	display: flex;
@@ -3740,6 +3739,23 @@
 	overflow-y: auto;
 }
 
+/* Keep the editable text hidden beneath the aligned mention-highlighting layer. */
+.chat-textarea.chat-textarea-with-overlay {
+	color: transparent;
+	-webkit-text-fill-color: transparent;
+	background: transparent;
+}
+
+.chat-textarea-overlay .chat-mention-pill {
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--text-accent);
+	font-size: inherit;
+	font-weight: inherit;
+	text-decoration: underline dotted;
+}
+
 /* Compact send/stop buttons (icon-only) */
 .chat-send-icon {
 	padding: 4px 8px;
@@ -3762,6 +3778,10 @@
 	}
 
 	.chat-textarea {
+		padding: 5px 6px;
+		font-size: var(--font-ui-smaller);
+	}
+	.chat-textarea-overlay {
 		padding: 5px 6px;
 		font-size: var(--font-ui-smaller);
 	}
