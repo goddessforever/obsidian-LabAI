@@ -93,7 +93,7 @@ export function highlightMentions(
 				);
 			}
 			const span = document.createElement("span");
-			span.className = `chat-mention-pill${match.type === "folder" ? " chat-mention-pill-folder" : ""}`;
+			span.className = `chat-mention-pill chat-mention-pill-reference${match.type === "folder" ? " chat-mention-pill-folder" : ""}`;
 			if (match.type === "folder") {
 				const icon = document.createElementNS(
 					"http://www.w3.org/2000/svg",

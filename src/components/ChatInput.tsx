@@ -76,18 +76,6 @@ function makeId(): string {
 	return crypto.randomUUID();
 }
 
-function FolderReferenceIcon(): React.ReactElement {
-	return (
-		<svg
-			className="chat-reference-folder-icon"
-			viewBox="0 0 16 16"
-			aria-hidden="true"
-		>
-			<path d="M1.75 3.75h4.5L8 5.5h6.25v7H1.75z" />
-		</svg>
-	);
-}
-
 function detectAutocomplete(
 	text: string,
 	cursorPos: number,
@@ -650,6 +638,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 			text: string;
 			type: "mention" | "wikilink";
 			isFolder?: boolean;
+			isContextReference?: boolean;
 		}[] = [];
 
 		let m;
@@ -679,7 +668,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 					case "tag":
 						return { name: item.tag, isFolder: false };
 					case "active-note":
-						return null;
+						return { name: "Active note", isFolder: false };
 				}
 			})
 			.filter(
@@ -699,6 +688,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 					text: reference.name,
 					type: "mention",
 					isFolder: reference.isFolder,
+					isContextReference: true,
 				});
 				searchFrom = start + reference.name.length;
 			}
@@ -714,9 +704,8 @@ const ChatInput: React.FC<ChatInputProps> = ({
 			parts.push(
 				<span
 					key={match.start}
-					className={`chat-mention-pill${match.isFolder ? " chat-mention-pill-folder" : ""}`}
+					className={`chat-mention-pill${match.isContextReference ? " chat-mention-pill-reference" : ""}${match.isFolder ? " chat-mention-pill-folder" : ""}`}
 				>
-					{match.isFolder && <FolderReferenceIcon />}
 					{match.text}
 				</span>,
 			);
