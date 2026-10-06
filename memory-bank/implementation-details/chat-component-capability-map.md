@@ -2,7 +2,7 @@
 
 **Purpose:** a language- and framework-independent specification of the Chat Lab AI chat experience. It describes observable behavior and the services a replacement needs, rather than prescribing an implementation.
 
-**Current-state reference:** 2026-10-01. This map covers the capabilities present in the current chat experience. Optional or host-dependent behavior is labeled as such; planned ideas are not presented as shipped features.
+**Current-state reference:** 2026-10-06. This map covers the capabilities present in the current chat experience. Optional or host-dependent behavior is labeled as such; planned ideas are not presented as shipped features.
 
 **How to read it:** user-visible chat behavior is the portable layer. Repository operations are capability-based and may be absent or restricted. Named Obsidian APIs and syntax describe this product's adapter; other repository examples are illustrative, not claims of existing Chat Lab integrations.
 
@@ -84,7 +84,7 @@ The composer supports multiline text, automatic height growth, draft restoration
 
 The composer also supports:
 
-- Resource mentions/references, with searchable, disambiguated candidates and keyboard selection. Mentioning a resource (often with `@`) is a general interaction pattern; reference syntax and rendering depend on the host/adapter, with Obsidian-style `[[...]]` as one format.
+- Resource mentions/references, with searchable, disambiguated candidates and keyboard selection. Selected references appear as inline pills while composing, editing, and viewing a user message; attached files remain separate removable chips. Mentioning a resource (often with `@`) is a general interaction pattern; reference syntax and rendering depend on the host/adapter, with Obsidian-style `[[...]]` as one format.
 - Optional action shortcuts for edit, create, and append requests. The verbs and target selection are general concepts; exact slash syntax and available actions depend on the adapter.
 - Attachment selection and removal, with visible chips.
 - A thinking/reasoning request toggle where the model supports it.

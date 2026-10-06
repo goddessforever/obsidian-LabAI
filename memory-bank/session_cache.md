@@ -1,5 +1,19 @@
 # Session Cache
 
+## 2026-10-06 — T73 reference-pill source reconciliation
+
+- Corrected the task registry header to Obsidian AI and recorded source commit
+  `dba88eb` in the chat map and UI implementation notes.
+- Selected context references now share the teal pill treatment across
+  compose/edit/display; paperclip note/image/PDF attachments stay separate
+  chips. The composer decoration preserves text width for caret alignment.
+- Prettier, production build, and `git diff --check` passed. Tests and live
+  Obsidian acceptance were not run. `main` was clean and current before this
+  Memory Bank update.
+- Session record: `sessions/2026-10-06-chat-reference-pill-memory-update.md`.
+- The Memory Bank is text-primary. No safe text edit-history generator was
+  found; the database regeneration path was not used.
+
 ## 2026-10-01 — Chat component map and primary UI references
 
 - T73 is active; T73a's repository-neutral baseline and mockup deliverable is

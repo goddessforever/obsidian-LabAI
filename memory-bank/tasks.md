@@ -1,7 +1,7 @@
-# Memory Bank - Sage Workspace
+# Memory Bank - Obsidian AI
 
 *Created: 2026-08-07 23:23:17 IST*
-*Last Updated: 2026-09-30 03:45:08 IST*
+*Last Updated: 2026-10-06 12:24:27 IST*
 
 ## Overview
 

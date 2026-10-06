@@ -1,5 +1,15 @@
 # Active Context
 
+### 2026-10-06 — T73 reference-pill source reconciliation
+
+- Corrected the task registry identity from Sage Workspace to Obsidian AI.
+- Source commit `dba88eb` applies teal pills to selected note, folder, tag, and
+  active-note references in compose/edit/display. The composer uses a
+  non-layout-affecting decoration for caret alignment; file attachments remain
+  separate chips.
+- Production build and formatting passed. Tests and live Obsidian acceptance
+  were not run. T73 remains active for the broader source-to-map audit.
+
 ### 2026-10-01 — T73 Chat component map and primary UI references
 
 - T73 remains active for feature/source reconciliation; T73a is complete for

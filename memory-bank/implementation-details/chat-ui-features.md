@@ -99,6 +99,21 @@ When Enter is configured for a new line, Shift+Enter and Cmd/Ctrl+Enter still se
 
 ---
 
+## Inline Context Reference Pills (2026-10-06)
+
+Selected note, folder, tag, and active-note references use the teal inline pill
+style in the composer, edit/resubmit mode, and rendered user messages. The
+composer draws the pill border and fill in a positioned pseudo-element so the
+reference text keeps the same width as the textarea and the caret remains
+aligned. The composer omits the folder icon for this reason; displayed folder
+references retain it. Paperclip attachments (notes, images, and PDFs) remain
+separate removable attachment chips rather than inline context pills.
+
+Implementation: `ChatInput.tsx` renders selected-context highlights;
+`MessageBubble.tsx` styles references in user messages;
+`styles/_chat-extensions.css` contains the shared visual treatment and generated
+`styles.css`. Source fix: `dba88eb`.
+
 ## File Attachments (📎)
 
 **Feature:** Allow users to attach vault files (markdown notes, images, PDFs) to chat messages for LLM consumption.
