@@ -282,7 +282,11 @@ const ChatInput: React.FC<ChatInputProps> = ({
 		if (editMessage !== undefined) {
 			setValue(editMessage);
 			setTimeout(() => textareaRef.current?.focus(), 50);
-		} else {
+		}
+	}, [editMessage]);
+
+	useEffect(() => {
+		if (editMessage === undefined) {
 			setValue(draft ?? "");
 		}
 	}, [draft, editMessage]);
