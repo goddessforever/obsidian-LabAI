@@ -3406,6 +3406,18 @@
 	width: 100%;
 }
 
+.chat-textarea-container {
+	position: relative;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.chat-textarea-container .chat-textarea {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+}
+
 .chat-input-right {
 	display: flex;
 	align-items: center;

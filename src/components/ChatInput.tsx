@@ -753,23 +753,25 @@ const ChatInput: React.FC<ChatInputProps> = ({
 				className={`chat-input-wrapper${isDragOver ? " drag-over" : ""}`}
 			>
 				{/* Row 1: Textarea + send button */}
-				<div
-					className="chat-input-row"
-					style={{ position: "relative" }}
-				>
-					<div className="chat-textarea-overlay" aria-hidden="true">
-						{renderMentionOverlay(value)}
+				<div className="chat-input-row">
+					<div className="chat-textarea-container">
+						<div
+							className="chat-textarea-overlay"
+							aria-hidden="true"
+						>
+							{renderMentionOverlay(value)}
+						</div>
+						<textarea
+							ref={textareaRef}
+							className="chat-textarea chat-textarea-with-overlay"
+							rows={1}
+							placeholder={placeholder}
+							value={value}
+							onChange={handleInputChange}
+							onKeyDown={handleKeyDown}
+							disabled={isStreaming}
+						/>
 					</div>
-					<textarea
-						ref={textareaRef}
-						className="chat-textarea chat-textarea-with-overlay"
-						rows={1}
-						placeholder={placeholder}
-						value={value}
-						onChange={handleInputChange}
-						onKeyDown={handleKeyDown}
-						disabled={isStreaming}
-					/>
 					{/* Right: send/stop/edit actions */}
 					<div className="chat-input-right">
 						{isStreaming ? (
