@@ -1294,6 +1294,39 @@
 	text-decoration: underline dotted;
 }
 
+.chat-reference-folder-icon {
+	display: inline-block;
+	width: 0.9em;
+	height: 0.9em;
+	margin-right: 0.24em;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	vertical-align: -0.12em;
+}
+
+.chat-textarea-overlay .chat-mention-pill-folder {
+	padding: 1px 5px;
+	border: 1px solid #087e74;
+	border-radius: 7px;
+	background: #e2f3ef;
+	color: #075e57;
+	font-weight: 650;
+	text-decoration: none;
+}
+
+.chat-bubble-user .chat-mention-pill-folder {
+	padding: 1px 5px;
+	border: 1px solid #92ded5;
+	border-radius: 7px;
+	background: #075e57;
+	color: #ffffff;
+	font-weight: 650;
+	text-decoration: none;
+}
+
 /* Compact send/stop buttons (icon-only) */
 .chat-send-icon {
 	padding: 4px 8px;

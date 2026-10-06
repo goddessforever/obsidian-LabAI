@@ -76,6 +76,18 @@ function makeId(): string {
 	return crypto.randomUUID();
 }
 
+function FolderReferenceIcon(): React.ReactElement {
+	return (
+		<svg
+			className="chat-reference-folder-icon"
+			viewBox="0 0 16 16"
+			aria-hidden="true"
+		>
+			<path d="M1.75 3.75h4.5L8 5.5h6.25v7H1.75z" />
+		</svg>
+	);
+}
+
 function detectAutocomplete(
 	text: string,
 	cursorPos: number,
@@ -637,6 +649,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 			end: number;
 			text: string;
 			type: "mention" | "wikilink";
+			isFolder?: boolean;
 		}[] = [];
 
 		let m;
@@ -660,29 +673,34 @@ const ChatInput: React.FC<ChatInputProps> = ({
 			.map((item) => {
 				switch (item.type) {
 					case "note":
+						return { name: item.name, isFolder: false };
 					case "folder":
-						return item.name;
+						return { name: item.name, isFolder: true };
 					case "tag":
-						return item.tag;
+						return { name: item.tag, isFolder: false };
 					case "active-note":
 						return null;
 				}
 			})
-			.filter((name): name is string => Boolean(name))
-			.sort((a, b) => b.length - a.length);
+			.filter(
+				(reference): reference is { name: string; isFolder: boolean } =>
+					Boolean(reference?.name),
+			)
+			.sort((a, b) => b.name.length - a.name.length);
 
-		for (const name of contextNames) {
+		for (const reference of contextNames) {
 			let searchFrom = 0;
 			while (searchFrom < text.length) {
-				const start = text.indexOf(name, searchFrom);
+				const start = text.indexOf(reference.name, searchFrom);
 				if (start === -1) break;
 				matches.push({
 					start,
-					end: start + name.length,
-					text: name,
+					end: start + reference.name.length,
+					text: reference.name,
 					type: "mention",
+					isFolder: reference.isFolder,
 				});
-				searchFrom = start + name.length;
+				searchFrom = start + reference.name.length;
 			}
 		}
 
@@ -694,7 +712,11 @@ const ChatInput: React.FC<ChatInputProps> = ({
 				parts.push(text.slice(lastIndex, match.start));
 			}
 			parts.push(
-				<span key={match.start} className="chat-mention-pill">
+				<span
+					key={match.start}
+					className={`chat-mention-pill${match.isFolder ? " chat-mention-pill-folder" : ""}`}
+				>
+					{match.isFolder && <FolderReferenceIcon />}
 					{match.text}
 				</span>,
 			);

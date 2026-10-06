@@ -16,23 +16,30 @@ export function highlightMentions(
 	items: ContextItem[],
 ): void {
 	if (!items || items.length === 0) return;
-	const names = items
+	const references = items
 		.map((item) => {
 			switch (item.type) {
 				case "note":
-					return item.name;
+					return { name: item.name, type: item.type };
 				case "folder":
-					return item.name;
+					return { name: item.name, type: item.type };
 				case "tag":
-					return item.tag;
+					return { name: item.tag, type: item.type };
 				case "active-note":
-					return "Active note";
+					return { name: "Active note", type: item.type };
 			}
 		})
-		.filter((name): name is string => Boolean(name));
-	if (names.length === 0) return;
+		.filter(
+			(
+				reference,
+			): reference is {
+				name: string;
+				type: ContextItem["type"];
+			} => Boolean(reference?.name),
+		);
+	if (references.length === 0) return;
 	// Sort by length descending so overlapping names prefer the longest match
-	names.sort((a, b) => b.length - a.length);
+	references.sort((a, b) => b.name.length - a.name.length);
 	// Walk text nodes and replace EVERY occurrence, not just the first.
 	const walker = document.createTreeWalker(
 		container,
@@ -49,21 +56,29 @@ export function highlightMentions(
 		const text = textNode.textContent || "";
 		// Find all non-overlapping matches, earliest first; on a tie the
 		// longest name wins (names are length-sorted).
-		const matches: Array<{ start: number; name: string }> = [];
+		const matches: Array<{
+			start: number;
+			name: string;
+			type: ContextItem["type"];
+		}> = [];
 		let searchFrom = 0;
 		while (searchFrom <= text.length) {
 			let bestIdx = -1;
-			let bestName = "";
-			for (const name of names) {
-				const idx = text.indexOf(name, searchFrom);
+			let bestReference = references[0];
+			for (const reference of references) {
+				const idx = text.indexOf(reference.name, searchFrom);
 				if (idx !== -1 && (bestIdx === -1 || idx < bestIdx)) {
 					bestIdx = idx;
-					bestName = name;
+					bestReference = reference;
 				}
 			}
 			if (bestIdx === -1) break;
-			matches.push({ start: bestIdx, name: bestName });
-			searchFrom = bestIdx + bestName.length;
+			matches.push({
+				start: bestIdx,
+				name: bestReference.name,
+				type: bestReference.type,
+			});
+			searchFrom = bestIdx + bestReference.name.length;
 		}
 		if (matches.length === 0) continue;
 		pillsCreated += matches.length;
@@ -78,8 +93,24 @@ export function highlightMentions(
 				);
 			}
 			const span = document.createElement("span");
-			span.className = "chat-mention-pill";
-			span.textContent = match.name;
+			span.className = `chat-mention-pill${match.type === "folder" ? " chat-mention-pill-folder" : ""}`;
+			if (match.type === "folder") {
+				const icon = document.createElementNS(
+					"http://www.w3.org/2000/svg",
+					"svg",
+				);
+				icon.setAttribute("viewBox", "0 0 16 16");
+				icon.setAttribute("aria-hidden", "true");
+				icon.classList.add("chat-reference-folder-icon");
+				const path = document.createElementNS(
+					"http://www.w3.org/2000/svg",
+					"path",
+				);
+				path.setAttribute("d", "M1.75 3.75h4.5L8 5.5h6.25v7H1.75z");
+				icon.appendChild(path);
+				span.appendChild(icon);
+			}
+			span.appendChild(document.createTextNode(match.name));
 			fragment.appendChild(span);
 			cursor = match.start + match.name.length;
 		}
