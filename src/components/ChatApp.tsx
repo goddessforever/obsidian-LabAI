@@ -1132,6 +1132,7 @@ const ChatApp: React.FC<ChatAppProps> = ({
 				renderMarkdown={renderMarkdown}
 				plugin={plugin}
 				sessionId={activeSessionId}
+				contextItems={contextItems}
 				messages={messages}
 				currentAiMessage={activeRuntime.currentAiMessage}
 				currentContentParts={activeRuntime.currentContentParts}

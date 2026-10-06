@@ -211,6 +211,7 @@ const PreviewApp: React.FC = () => {
 					<ChatInput
 						app={previewApp}
 						plugin={plugin}
+						contextItems={[]}
 						onSend={noop}
 						onStop={noop}
 						onTyping={noop}

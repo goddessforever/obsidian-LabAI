@@ -16,6 +16,7 @@ import { ChatPluginLike } from "../views/ObsidianAIChatView";
 interface ChatInputProps {
 	app: App;
 	plugin: ChatPluginLike;
+	contextItems: ContextItem[];
 	onSend: (
 		text: string,
 		attachments?: import("../types").Attachment[],
@@ -128,6 +129,7 @@ const SLASH_COMMANDS: AutoCandidate[] = [
 const ChatInput: React.FC<ChatInputProps> = ({
 	app,
 	plugin,
+	contextItems,
 	onSend,
 	onStop,
 	onAddMention,
@@ -621,7 +623,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 		[handleFiles],
 	);
 
-	/** Parse text and wrap @mentions and [[wikilinks]] in pill spans for the overlay */
+	/** Highlight selected context names and explicit mentions in the overlay. */
 	const renderMentionOverlay = (text: string): React.ReactNode[] => {
 		if (!text) return [];
 		const parts: React.ReactNode[] = [];
@@ -654,10 +656,40 @@ const ChatInput: React.FC<ChatInputProps> = ({
 				type: "wikilink",
 			});
 		}
+		const contextNames = contextItems
+			.map((item) => {
+				switch (item.type) {
+					case "note":
+					case "folder":
+						return item.name;
+					case "tag":
+						return item.tag;
+					case "active-note":
+						return null;
+				}
+			})
+			.filter((name): name is string => Boolean(name))
+			.sort((a, b) => b.length - a.length);
 
-		matches.sort((a, b) => a.start - b.start);
+		for (const name of contextNames) {
+			let searchFrom = 0;
+			while (searchFrom < text.length) {
+				const start = text.indexOf(name, searchFrom);
+				if (start === -1) break;
+				matches.push({
+					start,
+					end: start + name.length,
+					text: name,
+					type: "mention",
+				});
+				searchFrom = start + name.length;
+			}
+		}
+
+		matches.sort((a, b) => a.start - b.start || b.end - a.end);
 
 		for (const match of matches) {
+			if (match.start < lastIndex) continue;
 			if (match.start > lastIndex) {
 				parts.push(text.slice(lastIndex, match.start));
 			}

@@ -22,6 +22,7 @@ interface ChatMainAreaProps {
 	) => Promise<void>;
 	plugin: ChatPluginLike;
 	sessionId: string | null;
+	contextItems: ContextItem[];
 	messages: ChatMessage[];
 	currentAiMessage: string;
 	currentContentParts: ContentPart[];
@@ -71,6 +72,7 @@ const ChatMainArea: React.FC<ChatMainAreaProps> = ({
 	renderMarkdown,
 	plugin,
 	sessionId,
+	contextItems,
 	messages,
 	currentAiMessage,
 	currentContentParts,
@@ -166,6 +168,7 @@ const ChatMainArea: React.FC<ChatMainAreaProps> = ({
 				key={sessionId ?? "new-chat"}
 				app={app}
 				plugin={plugin}
+				contextItems={contextItems}
 				onSend={onSend}
 				onStop={onStop}
 				onTyping={onTyping}
