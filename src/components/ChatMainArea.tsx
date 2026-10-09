@@ -14,6 +14,7 @@ import PendingToolCard from "./presentational/PendingToolCard";
 import type { ChatPluginLike } from "../views/ObsidianAIChatView";
 
 interface ChatMainAreaProps {
+	composerControls?: React.ReactNode;
 	app: App;
 	renderMarkdown: (
 		markdown: string,
@@ -68,6 +69,7 @@ interface ChatMainAreaProps {
 }
 
 const ChatMainArea: React.FC<ChatMainAreaProps> = ({
+	composerControls,
 	app,
 	renderMarkdown,
 	plugin,
@@ -165,6 +167,7 @@ const ChatMainArea: React.FC<ChatMainAreaProps> = ({
 				/>
 			)}
 			<ChatInput
+				composerControls={composerControls}
 				key={sessionId ?? "new-chat"}
 				app={app}
 				plugin={plugin}

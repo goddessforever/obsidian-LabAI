@@ -1,3 +1,4 @@
+import ModelSwitcher from "./presentational/ModelSwitcher";
 import React, {
 	useState,
 	useRef,
@@ -1148,6 +1149,7 @@ const ChatApp: React.FC<ChatAppProps> = ({
 				</button>
 			)}
 			<ChatMainArea
+				composerControls={<ModelSwitcher profile={resolvedProfile} plugin={plugin} selectedProfileIds={ui.selectedProfileIds} resolvedProfiles={resolvedSelectedProfiles} modelOverrides={modelOverrides} onModelChange={handleModelChange} />}
 				app={plugin.app}
 				renderMarkdown={renderMarkdown}
 				plugin={plugin}

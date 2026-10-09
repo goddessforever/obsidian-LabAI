@@ -3,7 +3,7 @@ import { Menu } from "obsidian";
 import { ChatPluginLike } from "../../views/ObsidianAIChatView";
 import type { ProviderProfile } from "../../settings";
 import ObsidianIcon from "../ObsidianIcon";
-import ModelSwitcher from "./ModelSwitcher";
+
 
 interface ActionBarProps {
 	sessionMenu?: React.ReactNode;
@@ -191,16 +191,6 @@ const ActionBar: React.FC<ActionBarProps> = ({
 					<ObsidianIcon icon="history" size={17} />
 				</button>
 				)}
-
-				{/* Keep the active provider/model control immediately before Agents. */}
-				<ModelSwitcher
-					profile={profile}
-					plugin={plugin}
-					selectedProfileIds={selectedProfileIds}
-					resolvedProfiles={resolvedSelectedProfiles}
-					modelOverrides={modelOverrides}
-					onModelChange={onModelChange}
-				/>
 
 				{onToggleParticipantDropdown && (
 					<div className="chat-council-trigger">
