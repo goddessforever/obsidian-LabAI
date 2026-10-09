@@ -1,4 +1,5 @@
 import { App, Notice, Modal, Setting, requestUrl } from "obsidian";
+import { MANAGED_BUILD, MANAGED_UPDATE_MESSAGE } from "../managed-build";
 
 /** Simple logger interface for PluginUpdater diagnostics */
 export interface UpdaterLogger {
@@ -44,7 +45,7 @@ export interface UpdateCheckResult {
 	latestCommit?: CommitInfo | null;
 }
 
-const GITHUB_REPO = "space-cadet/obsidian-ai";
+const GITHUB_REPO = "goddessforever/obsidian-LabAI";
 const RELEASE_FILES = ["main.js", "manifest.json", "styles.css"];
 
 /** Simple semver comparison: returns >0 if v1 > v2, <0 if v1 < v2, 0 if equal.
@@ -360,6 +361,7 @@ export class PluginUpdater {
 
 	/** Download update files to a temp directory */
 	async downloadUpdate(release: ReleaseInfo): Promise<string> {
+		if (MANAGED_BUILD) throw new Error(MANAGED_UPDATE_MESSAGE);
 		const tempDir = `${this.pluginDir}/.update-tmp`;
 		await this.ensureDir(tempDir);
 		this.log(
@@ -400,6 +402,7 @@ export class PluginUpdater {
 
 	/** Install downloaded update files */
 	async installUpdate(tempDir: string): Promise<void> {
+		if (MANAGED_BUILD) throw new Error(MANAGED_UPDATE_MESSAGE);
 		const backupDir = `${this.pluginDir}/.backup`;
 		await this.ensureDir(backupDir);
 		this.log(

@@ -292,13 +292,13 @@
 }
 
 /* Show model/endpoint on wider panels */
-@media (min-width: 500px) {
+@container labai-settings (min-width: 500px) {
 	.obsidian-ai-profile-col-model {
 		display: block;
 	}
 }
 
-@media (min-width: 650px) {
+@container labai-settings (min-width: 650px) {
 	.obsidian-ai-profile-col-endpoint {
 		display: block;
 	}
@@ -446,7 +446,7 @@
 
 /* ─── Responsive: always wrap gracefully ────────────────────────── */
 
-@media (max-width: 420px) {
+@container labai-settings (max-width: 420px) {
 	.obsidian-ai-profile-row {
 		flex-wrap: wrap;
 		gap: 4px 8px;
@@ -857,7 +857,7 @@
 }
 
 /* Mobile: dropdown full width */
-@media (max-width: 768px) {
+@container labai-chat (max-width: 768px) {
 	.chat-participant-dropdown {
 		left: 4px;
 		right: 4px;
@@ -988,7 +988,7 @@
 }
 
 /* Mobile: tighter spacing */
-@media (max-width: 768px) {
+@container labai-chat (max-width: 768px) {
 	.chat-input-wrapper {
 		padding: 6px 6px 0;
 		margin-bottom: 0;
@@ -1003,7 +1003,7 @@
 	}
 }
 
-@media (max-width: 420px) {
+@container labai-chat (max-width: 420px) {
 	.chat-textarea {
 		min-width: 60px;
 		padding: 4px 5px;
@@ -1352,7 +1352,7 @@
 }
 
 /* Mobile: tighter input */
-@media (max-width: 768px) {
+@container labai-chat (max-width: 768px) {
 	.chat-input-area {
 		padding: 6px;
 		gap: 4px;
@@ -1817,3 +1817,56 @@
 }
 
 /* ─── Settings Improvements ─────────────────────────────────────────── */
+
+/* Keep secondary controls usable in narrow panes and on touch devices. */
+.chat-reference-chip {
+	min-width: 0;
+	box-sizing: border-box;
+}
+.chat-export-actions,
+.chat-session-delete-confirm-actions {
+	flex-wrap: wrap;
+}
+.chat-attach-modal,
+.chat-export-modal {
+	max-height: 80dvh;
+	overflow-y: auto;
+}
+.chat-session-delete-confirm-card {
+	min-width: 0;
+	max-height: 100%;
+	overflow-y: auto;
+	overflow-wrap: anywhere;
+}
+@media (pointer: coarse) {
+	.chat-send-icon,
+	.chat-attach-btn,
+	.chat-reference-remove,
+	.chat-attachment-remove,
+	.chat-participant-remove,
+	.chat-session-tab-close {
+		min-width: 44px;
+		min-height: 44px;
+	}
+	.chat-session-tab-select,
+	.chat-attach-item,
+	.chat-export-option,
+	.chat-export-session-item,
+	.chat-participant-item,
+	.chat-remote-user-dropdown-item {
+		min-height: 44px;
+	}
+	.chat-textarea,
+	.chat-textarea-overlay {
+		font-size: 16px;
+	}
+}
+@container labai-chat (max-width: 420px) {
+	.chat-export-option {
+		flex-wrap: wrap;
+	}
+	.chat-export-option-hint {
+		margin-left: 0;
+		white-space: normal;
+	}
+}

@@ -94,6 +94,8 @@ export const ModelSwitcher: React.FC<ModelSwitcherProps> = ({
 	const [dropdownPosition, setDropdownPosition] = useState({
 		top: 0,
 		left: 0,
+		width: 320,
+		maxHeight: 400,
 	});
 
 	const applyModelOverride = useCallback(
@@ -157,87 +159,97 @@ export const ModelSwitcher: React.FC<ModelSwitcherProps> = ({
 		}
 	}, [isMultiAgent, selectedProfiles, submenuAgentId]);
 
-	// Focus search when opening
+	// Use the trigger's document: chat panes can live in an Obsidian popout.
 	useEffect(() => {
-		if (isOpen && searchRef.current) {
-			setTimeout(() => searchRef.current?.focus(), 10);
-		}
-	}, [isOpen]);
+		if (!isOpen) return;
+		const owner = triggerRef.current?.ownerDocument.defaultView;
+		const timer = owner?.setTimeout(() => searchRef.current?.focus(), 10);
+		return () => owner?.clearTimeout(timer);
+	}, [isOpen, submenuAgentId]);
 
-	// The toolbar scroll container clips descendants below its bottom edge.
-	// Position the portaled menu against the trigger so it remains visible over
-	// the chat content while the toolbar retains horizontal scrolling.
 	useLayoutEffect(() => {
 		if (!isOpen) return;
-
+		const owner = triggerRef.current?.ownerDocument.defaultView;
+		if (!owner) return;
+		const viewport = owner.visualViewport;
 		const updateDropdownPosition = () => {
 			const trigger = triggerRef.current;
 			if (!trigger) return;
-
 			const rect = trigger.getBoundingClientRect();
 			const padding = 8;
-			const menuWidth = Math.min(320, window.innerWidth - padding * 2);
-			const menuHeight = Math.min(400, window.innerHeight - padding * 2);
-			const maxLeft = Math.max(
-				padding,
-				window.innerWidth - menuWidth - padding,
+			const leftEdge = (viewport?.offsetLeft ?? 0) + padding;
+			const topEdge = (viewport?.offsetTop ?? 0) + padding;
+			const width = Math.max(
+				0,
+				(viewport?.width ?? owner.innerWidth) - padding * 2,
 			);
+			const height = Math.max(
+				0,
+				(viewport?.height ?? owner.innerHeight) - padding * 2,
+			);
+			const menuWidth = Math.min(320, width);
+			const menuHeight = Math.min(400, height);
+			const bottomEdge = topEdge + height;
 			const belowTop = rect.bottom + 4;
-			const top =
-				belowTop + menuHeight <= window.innerHeight - padding
+			const preferredTop =
+				belowTop + menuHeight <= bottomEdge
 					? belowTop
-					: Math.max(padding, rect.top - menuHeight - 4);
+					: rect.top - menuHeight - 4;
 			setDropdownPosition({
-				top,
-				left: Math.min(Math.max(padding, rect.left), maxLeft),
+				top: Math.max(
+					topEdge,
+					Math.min(preferredTop, bottomEdge - menuHeight),
+				),
+				left: Math.max(
+					leftEdge,
+					Math.min(rect.left, leftEdge + width - menuWidth),
+				),
+				width: menuWidth,
+				maxHeight: menuHeight,
 			});
 		};
-
 		updateDropdownPosition();
-		window.addEventListener("resize", updateDropdownPosition);
-		window.addEventListener("scroll", updateDropdownPosition, true);
+		owner.addEventListener("resize", updateDropdownPosition);
+		owner.addEventListener("scroll", updateDropdownPosition, true);
+		viewport?.addEventListener("resize", updateDropdownPosition);
+		viewport?.addEventListener("scroll", updateDropdownPosition);
 		return () => {
-			window.removeEventListener("resize", updateDropdownPosition);
-			window.removeEventListener("scroll", updateDropdownPosition, true);
+			owner.removeEventListener("resize", updateDropdownPosition);
+			owner.removeEventListener("scroll", updateDropdownPosition, true);
+			viewport?.removeEventListener("resize", updateDropdownPosition);
+			viewport?.removeEventListener("scroll", updateDropdownPosition);
 		};
 	}, [isOpen]);
 
-	// Click outside to close
 	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
+		if (!isOpen) return;
+		const doc = triggerRef.current?.ownerDocument;
+		const handleClickOutside = (event: Event) => {
 			if (
-				containerRef.current &&
-				!containerRef.current.contains(event.target as Node) &&
-				(!dropdownRef.current ||
-					!dropdownRef.current.contains(event.target as Node))
+				!containerRef.current?.contains(event.target as Node) &&
+				!dropdownRef.current?.contains(event.target as Node)
 			) {
 				setIsOpen(false);
 				setSubmenuAgentId(null);
 			}
 		};
-		if (isOpen) {
-			document.addEventListener("mousedown", handleClickOutside);
-		}
-		return () =>
-			document.removeEventListener("mousedown", handleClickOutside);
-	}, [isOpen]);
-
-	// Escape to close
-	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "Escape") {
-				if (submenuAgentId) {
-					setSubmenuAgentId(null);
-					setSearch("");
-				} else {
-					setIsOpen(false);
-				}
+			if (e.key !== "Escape") return;
+			e.preventDefault();
+			if (submenuAgentId) {
+				setSubmenuAgentId(null);
+				setSearch("");
+			} else {
+				setIsOpen(false);
+				triggerRef.current?.focus();
 			}
 		};
-		if (isOpen) {
-			document.addEventListener("keydown", handleKeyDown);
-		}
-		return () => document.removeEventListener("keydown", handleKeyDown);
+		doc?.addEventListener("pointerdown", handleClickOutside);
+		doc?.addEventListener("keydown", handleKeyDown);
+		return () => {
+			doc?.removeEventListener("pointerdown", handleClickOutside);
+			doc?.removeEventListener("keydown", handleKeyDown);
+		};
 	}, [isOpen, submenuAgentId]);
 
 	const getModelsForProfile = useCallback(
@@ -440,7 +452,7 @@ export const ModelSwitcher: React.FC<ModelSwitcherProps> = ({
 				</span>
 			</button>
 
-			{isOpen && typeof document !== "undefined" && document.body
+			{isOpen && triggerRef.current?.ownerDocument.body
 				? (createPortal(
 						<div
 							ref={dropdownRef}
@@ -449,6 +461,8 @@ export const ModelSwitcher: React.FC<ModelSwitcherProps> = ({
 							style={{
 								top: dropdownPosition.top,
 								left: dropdownPosition.left,
+								width: dropdownPosition.width,
+								maxHeight: dropdownPosition.maxHeight,
 							}}
 						>
 							{/* ─── Multi-agent: Agent list ─── */}
@@ -628,7 +642,7 @@ export const ModelSwitcher: React.FC<ModelSwitcherProps> = ({
 								</>
 							)}
 						</div>,
-						document.body,
+						triggerRef.current.ownerDocument.body,
 					) as unknown as React.ReactNode)
 				: null}
 		</div>

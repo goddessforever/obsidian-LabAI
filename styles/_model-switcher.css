@@ -50,15 +50,16 @@
 .chat-model-switcher-dropdown {
 	position: fixed;
 	width: min(320px, calc(100vw - 16px));
-	min-width: min(260px, calc(100vw - 16px));
+	min-width: 0;
 	max-width: calc(100vw - 16px);
 	max-height: min(400px, calc(100vh - 16px));
-	overflow: hidden;
+	overflow: auto;
+	overscroll-behavior: contain;
 	box-sizing: border-box;
 	z-index: 10000;
 	background: var(--background-primary);
 	border: 1px solid var(--background-modifier-border);
-	border-radius: 6px;
+	border-radius: 16px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	display: flex;
 	flex-direction: column;
@@ -267,5 +268,36 @@
 		height: 32px;
 		min-height: 32px;
 		padding: 3px;
+	}
+}
+
+/* Touch controls remain reachable even with the software keyboard open. */
+.chat-model-switcher-search,
+.chat-model-switcher-footer,
+.chat-model-switcher-back {
+	flex-shrink: 0;
+}
+.chat-model-switcher-item:focus-visible,
+.chat-model-switcher-refresh:focus-visible,
+.chat-model-switcher-back:focus-visible {
+	outline: 2px solid var(--interactive-accent);
+	outline-offset: -3px;
+}
+@media (pointer: coarse) {
+	.chat-model-switcher-trigger {
+		width: 44px;
+		min-width: 44px;
+		max-width: 44px;
+		height: 44px;
+		min-height: 44px;
+	}
+	.chat-model-switcher-item,
+	.chat-model-switcher-refresh,
+	.chat-model-switcher-back {
+		min-height: 44px;
+	}
+	.chat-model-switcher-search input {
+		min-height: 32px;
+		font-size: 16px;
 	}
 }

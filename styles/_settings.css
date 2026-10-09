@@ -234,3 +234,126 @@
 }
 
 /* ── Chat Sync Panel v2 (syncit-inspired) ───────────────────────────────── */
+
+/* Settings live inside a resizable host; desktop window width is irrelevant. */
+.obsidian-ai-settings :is(.obsidian-ai-settings-section,
+	.obsidian-ai-settings-discovery, .obsidian-ai-settings-hero) {
+	border-radius: var(--labai-settings-radius);
+	box-shadow: var(--labai-settings-shadow);
+}
+
+.obsidian-ai-settings :is(.setting-item-info, .setting-item-control,
+	.obsidian-ai-settings-section-body, .obsidian-ai-settings-model-row,
+	.obsidian-ai-api-key-control, .obsidian-ai-password-input-wrapper) {
+	min-width: 0;
+	max-width: 100%;
+}
+
+.obsidian-ai-settings .setting-item-control {
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.obsidian-ai-settings :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+	box-sizing: border-box;
+	min-width: 0 !important; /* Also bounds provider/sync inputs with inline minima. */
+	max-width: 100%;
+}
+
+.obsidian-ai-settings :is(.obsidian-ai-api-key-control, .obsidian-ai-password-input-wrapper) {
+	flex: 1 1 12rem;
+}
+
+.obsidian-ai-settings :is(button, .setting-item-name, .setting-item-description,
+	.obsidian-ai-settings-model-item, .obsidian-ai-settings-search-option) {
+	overflow-wrap: anywhere;
+}
+
+.obsidian-ai-settings button {
+	max-width: 100%;
+	white-space: normal;
+	height: auto;
+	min-height: var(--input-height, 30px);
+}
+
+.obsidian-ai-settings .obsidian-ai-settings-advanced-toggle {
+	min-height: 28px;
+}
+
+.obsidian-ai-settings :is(button, input, select, textarea, summary):focus-visible {
+	outline: 2px solid var(--obsidian-ai-accent);
+	outline-offset: 2px;
+}
+
+@container labai-settings (max-width: 760px) {
+	.obsidian-ai-settings-discovery .setting-item {
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.obsidian-ai-settings-discovery .setting-item-info {
+		flex-basis: 100%;
+	}
+	.obsidian-ai-settings-section .setting-item-info {
+		margin-inline-end: 0;
+	}
+	#obsidian-ai-settings-debug-mode > .obsidian-ai-settings-section-body > .setting-item,
+	.obsidian-ai-debug-telemetry-group .setting-item {
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	#obsidian-ai-settings-debug-mode > .obsidian-ai-settings-section-body > .setting-item .setting-item-info,
+	.obsidian-ai-debug-telemetry-group .setting-item-info {
+		padding-right: 0;
+	}
+}
+
+@container labai-settings (max-width: 420px) {
+	.obsidian-ai-settings .obsidian-ai-settings-section-body {
+		padding: 10px 0;
+	}
+	.obsidian-ai-settings .obsidian-ai-settings-section-header {
+		padding: 10px 4px;
+		gap: 8px;
+	}
+	.obsidian-ai-settings :is(.obsidian-ai-settings-collapse-bar, .obsidian-ai-profile-list-header,
+		.obsidian-ai-profile-col-actions, .obsidian-ai-profile-row) {
+		flex-wrap: wrap;
+	}
+	.obsidian-ai-settings .obsidian-ai-profile-col-name {
+		flex-basis: 100%;
+	}
+	.obsidian-ai-settings .obsidian-ai-settings-model-row,
+	.obsidian-ai-settings .obsidian-ai-settings-search-option {
+		flex-wrap: wrap;
+	}
+	.obsidian-ai-settings .obsidian-ai-settings-model-row input {
+		flex-basis: 100%;
+	}
+	.obsidian-ai-settings .obsidian-ai-usage-bar-row {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+	.obsidian-ai-settings .obsidian-ai-usage-bar-label {
+		width: auto;
+		white-space: normal;
+	}
+	.obsidian-ai-settings .obsidian-ai-usage-bar-track {
+		grid-column: 1 / -1;
+		grid-row: 2;
+	}
+	.obsidian-ai-settings .obsidian-ai-usage-bar-value {
+		width: auto;
+	}
+}
+
+@media (pointer: coarse) {
+	.obsidian-ai-settings :is(button, select, input:not([type="checkbox"]):not([type="radio"]), summary,
+		.obsidian-ai-settings-model-item, .obsidian-ai-settings-search-option) {
+		min-height: 44px;
+	}
+	.obsidian-ai-settings :is(.clickable-icon, .obsidian-ai-settings-advanced-toggle,
+		.obsidian-ai-settings-section-toggle,
+		.obsidian-ai-password-input-wrapper button, .obsidian-ai-api-key-control button) {
+		min-width: 44px;
+	}
+}

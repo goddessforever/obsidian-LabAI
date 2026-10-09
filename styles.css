@@ -128,6 +128,12 @@
 
 .obsidian-ai-settings {
 	--obsidian-ai-accent: var(--interactive-accent, #0d9488);
+	--labai-settings-radius: var(--auri-note-radius, 18px);
+	--labai-settings-shadow: 0 6px 20px rgb(0 0 0 / 8%);
+	container: labai-settings / inline-size;
+	min-width: 0;
+	font-family: var(--font-interface);
+	overflow-wrap: anywhere;
 	/* The settings tab inherits Obsidian's generous default gutters. */
 	box-sizing: border-box;
 	width: 100%;
@@ -462,7 +468,7 @@
 /* Keep the description and control columns usable at every panel width. */
 .obsidian-ai-settings-section .setting-item {
 	display: grid;
-	grid-template-columns: minmax(240px, 1fr) minmax(300px, 1.1fr);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
 	column-gap: 24px;
 	align-items: start;
 }
@@ -484,7 +490,7 @@
 	max-width: 100%;
 }
 
-@media (max-width: 760px) {
+@container labai-settings (max-width: 760px) {
 	.obsidian-ai-settings-section .setting-item {
 		display: block;
 	}
@@ -548,7 +554,7 @@
 	justify-content: flex-end;
 }
 
-@media (max-width: 760px) {
+@container labai-settings (max-width: 760px) {
 	#obsidian-ai-settings-debug-mode > .obsidian-ai-settings-section-body > .setting-item,
 	.obsidian-ai-debug-telemetry-group .setting-item {
 		display: flex;
@@ -577,7 +583,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-	min-width: 320px;
+	min-width: 0;
 	width: 100%;
 }
 
@@ -616,8 +622,8 @@
 }
 
 .obsidian-ai-settings-model-item.is-active {
-	background: #0d9488;
-	color: #ffffff;
+	background: var(--obsidian-ai-accent);
+	color: var(--text-on-accent);
 	font-weight: 600;
 }
 
@@ -653,7 +659,7 @@
 	color: var(--text-normal);
 }
 
-@media (max-width: 900px) {
+@container labai-settings (max-width: 900px) {
 	.obsidian-ai-settings-hero {
 		grid-template-columns: 1fr;
 	}
@@ -671,7 +677,7 @@
 	}
 }
 
-@media (max-width: 620px) {
+@container labai-settings (max-width: 620px) {
 	.obsidian-ai-settings-hero-meta {
 		grid-template-columns: 1fr;
 	}
@@ -681,14 +687,11 @@
 	}
 }
 
-@media (max-width: 420px) {
-	.obsidian-ai-settings {
-		padding-inline: 8px;
-	}
-
-	.modal.mod-settings .vertical-tab-content.obsidian-ai-settings,
-	.modal.mod-settings .setting-tab-content.obsidian-ai-settings {
-		padding-inline: 8px !important;
+@container labai-settings (max-width: 420px) {
+	.obsidian-ai-settings-section,
+	.obsidian-ai-settings-discovery,
+	.obsidian-ai-settings-hero {
+		padding: 12px;
 	}
 
 	.obsidian-ai-settings-metrics {
@@ -734,6 +737,9 @@
 /* ── Chat Panel ─────────────────────────────────────────────────────────── */
 
 .chat-panel {
+	container: labai-chat / inline-size;
+	min-width: 0;
+	border-radius: var(--auri-note-radius, 18px);
 	display: flex;
 	flex-direction: column;
 	height: 100%;
@@ -983,7 +989,7 @@
 	min-width: 36px;
 }
 
-@media (max-width: 480px) {
+@container labai-chat (max-width: 480px) {
 	.chat-action-bar {
 		padding-right: 6px;
 		padding-left: 6px;
@@ -1065,14 +1071,14 @@
 }
 
 /* Keep the passive profile summary compact below the interactive toolbar. */
-@media (max-width: 480px) {
+@container labai-chat (max-width: 480px) {
 	.chat-profile-chip {
 		max-width: 160px;
 		padding: 2px 6px;
 	}
 }
 
-@media (max-width: 360px) {
+@container labai-chat (max-width: 360px) {
 	.chat-profile-chip {
 		max-width: 132px;
 		padding: 2px 4px;
@@ -1235,7 +1241,7 @@
 }
 
 /* Mobile: wider bubbles, less padding */
-@media (max-width: 768px) {
+@container labai-chat (max-width: 768px) {
 	.chat-bubble {
 		max-width: 95%;
 		padding: 6px 8px;
@@ -2169,7 +2175,7 @@
 }
 
 /* Small screens: also always show */
-@media (max-width: 768px) {
+@container labai-chat (max-width: 768px) {
 	.message-actions-wrapper {
 		opacity: 1 !important;
 	}
@@ -2272,6 +2278,131 @@
 }
 
 /* ── Tool Call Notifications ────────────────────────────────────────────── */
+
+/* Pane-scoped Auri surfaces; retain native theme variables in standalone use. */
+.chat-panel .chat-action-bar {
+	overflow: visible;
+	flex-wrap: wrap;
+}
+.chat-panel .chat-action-bar-left {
+	flex-wrap: wrap;
+}
+.chat-panel .chat-textarea {
+	min-width: 0;
+}
+.chat-panel .chat-bubble {
+	border-radius: 16px;
+	overflow-wrap: anywhere;
+}
+.chat-panel .chat-bubble-user,
+.chat-panel .chat-send-btn,
+.chat-panel .chat-icon-btn.is-active {
+	background: var(--interactive-accent);
+	border-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+.chat-panel .chat-bubble-actions,
+.chat-panel .message-actions {
+	flex-wrap: wrap;
+}
+.chat-panel .chat-bubble:focus-within .message-actions-wrapper {
+	opacity: 1;
+}
+.chat-panel .chat-bubble:focus-within .chat-bubble-actions {
+	display: flex;
+}
+.chat-panel .labai-tab-strip {
+	position: relative;
+	min-width: 0;
+	flex-shrink: 0;
+	padding-inline: 24px;
+}
+.chat-panel .chat-session-tabs {
+	scrollbar-width: none;
+	padding: 6px 0;
+	border: 0;
+	background: transparent;
+}
+.chat-panel .chat-session-tabs::-webkit-scrollbar {
+	display: none;
+}
+.chat-panel .chat-session-tab {
+	border-radius: 12px;
+	border: 0;
+	max-width: 100%;
+	min-width: 0;
+}
+.chat-panel .chat-session-tab.is-active {
+	background: var(--background-modifier-hover);
+	box-shadow: 0 2px 8px #00000010;
+}
+.chat-panel .labai-tab-scroll {
+	position: absolute;
+	top: 6px;
+	bottom: 6px;
+	width: 24px;
+	padding: 0;
+	border: 0;
+	box-shadow: none;
+	background: transparent;
+	color: var(--text-muted);
+	opacity: 0.65;
+	display: grid;
+	place-items: center;
+}
+.chat-panel .labai-tab-scroll.is-left {
+	left: 0;
+}
+.chat-panel .labai-tab-scroll.is-right {
+	right: 0;
+}
+.chat-panel .labai-tab-scroll:hover,
+.chat-panel .labai-tab-scroll:focus-visible {
+	opacity: 1;
+}
+.labai-rename-session label {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.labai-rename-session input {
+	width: 100%;
+}
+.labai-rename-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 18px;
+}
+@media (pointer: coarse) {
+	.chat-panel
+		:is(
+			.chat-icon-btn,
+			.message-action-btn,
+			.chat-session-tab-close,
+			.chat-session-tab-select,
+			.chat-scroll-btn,
+			.chat-btn-small,
+			.chat-picker-tab
+		) {
+		min-width: 44px;
+		min-height: 44px;
+	}
+	.chat-panel .chat-action-bar-left > .chat-icon-btn,
+	.chat-panel .chat-action-bar-left .chat-council-trigger > .chat-icon-btn {
+		min-width: 44px;
+		min-height: 44px;
+	}
+	.chat-panel .chat-bubble-actions {
+		display: flex;
+	}
+	.chat-panel .labai-tab-strip {
+		padding-inline: 44px;
+	}
+	.chat-panel .labai-tab-scroll {
+		width: 44px;
+	}
+}
 
 
 /* Active bubble state (clicked) */
@@ -2766,13 +2897,13 @@
 }
 
 /* Show model/endpoint on wider panels */
-@media (min-width: 500px) {
+@container labai-settings (min-width: 500px) {
 	.obsidian-ai-profile-col-model {
 		display: block;
 	}
 }
 
-@media (min-width: 650px) {
+@container labai-settings (min-width: 650px) {
 	.obsidian-ai-profile-col-endpoint {
 		display: block;
 	}
@@ -2920,7 +3051,7 @@
 
 /* ─── Responsive: always wrap gracefully ────────────────────────── */
 
-@media (max-width: 420px) {
+@container labai-settings (max-width: 420px) {
 	.obsidian-ai-profile-row {
 		flex-wrap: wrap;
 		gap: 4px 8px;
@@ -3331,7 +3462,7 @@
 }
 
 /* Mobile: dropdown full width */
-@media (max-width: 768px) {
+@container labai-chat (max-width: 768px) {
 	.chat-participant-dropdown {
 		left: 4px;
 		right: 4px;
@@ -3462,7 +3593,7 @@
 }
 
 /* Mobile: tighter spacing */
-@media (max-width: 768px) {
+@container labai-chat (max-width: 768px) {
 	.chat-input-wrapper {
 		padding: 6px 6px 0;
 		margin-bottom: 0;
@@ -3477,7 +3608,7 @@
 	}
 }
 
-@media (max-width: 420px) {
+@container labai-chat (max-width: 420px) {
 	.chat-textarea {
 		min-width: 60px;
 		padding: 4px 5px;
@@ -3826,7 +3957,7 @@
 }
 
 /* Mobile: tighter input */
-@media (max-width: 768px) {
+@container labai-chat (max-width: 768px) {
 	.chat-input-area {
 		padding: 6px;
 		gap: 4px;
@@ -4292,6 +4423,59 @@
 
 /* ─── Settings Improvements ─────────────────────────────────────────── */
 
+/* Keep secondary controls usable in narrow panes and on touch devices. */
+.chat-reference-chip {
+	min-width: 0;
+	box-sizing: border-box;
+}
+.chat-export-actions,
+.chat-session-delete-confirm-actions {
+	flex-wrap: wrap;
+}
+.chat-attach-modal,
+.chat-export-modal {
+	max-height: 80dvh;
+	overflow-y: auto;
+}
+.chat-session-delete-confirm-card {
+	min-width: 0;
+	max-height: 100%;
+	overflow-y: auto;
+	overflow-wrap: anywhere;
+}
+@media (pointer: coarse) {
+	.chat-send-icon,
+	.chat-attach-btn,
+	.chat-reference-remove,
+	.chat-attachment-remove,
+	.chat-participant-remove,
+	.chat-session-tab-close {
+		min-width: 44px;
+		min-height: 44px;
+	}
+	.chat-session-tab-select,
+	.chat-attach-item,
+	.chat-export-option,
+	.chat-export-session-item,
+	.chat-participant-item,
+	.chat-remote-user-dropdown-item {
+		min-height: 44px;
+	}
+	.chat-textarea,
+	.chat-textarea-overlay {
+		font-size: 16px;
+	}
+}
+@container labai-chat (max-width: 420px) {
+	.chat-export-option {
+		flex-wrap: wrap;
+	}
+	.chat-export-option-hint {
+		margin-left: 0;
+		white-space: normal;
+	}
+}
+
 /* Usage bars for model diagnostics */
 .obsidian-ai-usage-bar-row {
 	display: flex;
@@ -4528,6 +4712,129 @@
 }
 
 /* ── Chat Sync Panel v2 (syncit-inspired) ───────────────────────────────── */
+
+/* Settings live inside a resizable host; desktop window width is irrelevant. */
+.obsidian-ai-settings :is(.obsidian-ai-settings-section,
+	.obsidian-ai-settings-discovery, .obsidian-ai-settings-hero) {
+	border-radius: var(--labai-settings-radius);
+	box-shadow: var(--labai-settings-shadow);
+}
+
+.obsidian-ai-settings :is(.setting-item-info, .setting-item-control,
+	.obsidian-ai-settings-section-body, .obsidian-ai-settings-model-row,
+	.obsidian-ai-api-key-control, .obsidian-ai-password-input-wrapper) {
+	min-width: 0;
+	max-width: 100%;
+}
+
+.obsidian-ai-settings .setting-item-control {
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.obsidian-ai-settings :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+	box-sizing: border-box;
+	min-width: 0 !important; /* Also bounds provider/sync inputs with inline minima. */
+	max-width: 100%;
+}
+
+.obsidian-ai-settings :is(.obsidian-ai-api-key-control, .obsidian-ai-password-input-wrapper) {
+	flex: 1 1 12rem;
+}
+
+.obsidian-ai-settings :is(button, .setting-item-name, .setting-item-description,
+	.obsidian-ai-settings-model-item, .obsidian-ai-settings-search-option) {
+	overflow-wrap: anywhere;
+}
+
+.obsidian-ai-settings button {
+	max-width: 100%;
+	white-space: normal;
+	height: auto;
+	min-height: var(--input-height, 30px);
+}
+
+.obsidian-ai-settings .obsidian-ai-settings-advanced-toggle {
+	min-height: 28px;
+}
+
+.obsidian-ai-settings :is(button, input, select, textarea, summary):focus-visible {
+	outline: 2px solid var(--obsidian-ai-accent);
+	outline-offset: 2px;
+}
+
+@container labai-settings (max-width: 760px) {
+	.obsidian-ai-settings-discovery .setting-item {
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.obsidian-ai-settings-discovery .setting-item-info {
+		flex-basis: 100%;
+	}
+	.obsidian-ai-settings-section .setting-item-info {
+		margin-inline-end: 0;
+	}
+	#obsidian-ai-settings-debug-mode > .obsidian-ai-settings-section-body > .setting-item,
+	.obsidian-ai-debug-telemetry-group .setting-item {
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	#obsidian-ai-settings-debug-mode > .obsidian-ai-settings-section-body > .setting-item .setting-item-info,
+	.obsidian-ai-debug-telemetry-group .setting-item-info {
+		padding-right: 0;
+	}
+}
+
+@container labai-settings (max-width: 420px) {
+	.obsidian-ai-settings .obsidian-ai-settings-section-body {
+		padding: 10px 0;
+	}
+	.obsidian-ai-settings .obsidian-ai-settings-section-header {
+		padding: 10px 4px;
+		gap: 8px;
+	}
+	.obsidian-ai-settings :is(.obsidian-ai-settings-collapse-bar, .obsidian-ai-profile-list-header,
+		.obsidian-ai-profile-col-actions, .obsidian-ai-profile-row) {
+		flex-wrap: wrap;
+	}
+	.obsidian-ai-settings .obsidian-ai-profile-col-name {
+		flex-basis: 100%;
+	}
+	.obsidian-ai-settings .obsidian-ai-settings-model-row,
+	.obsidian-ai-settings .obsidian-ai-settings-search-option {
+		flex-wrap: wrap;
+	}
+	.obsidian-ai-settings .obsidian-ai-settings-model-row input {
+		flex-basis: 100%;
+	}
+	.obsidian-ai-settings .obsidian-ai-usage-bar-row {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+	}
+	.obsidian-ai-settings .obsidian-ai-usage-bar-label {
+		width: auto;
+		white-space: normal;
+	}
+	.obsidian-ai-settings .obsidian-ai-usage-bar-track {
+		grid-column: 1 / -1;
+		grid-row: 2;
+	}
+	.obsidian-ai-settings .obsidian-ai-usage-bar-value {
+		width: auto;
+	}
+}
+
+@media (pointer: coarse) {
+	.obsidian-ai-settings :is(button, select, input:not([type="checkbox"]):not([type="radio"]), summary,
+		.obsidian-ai-settings-model-item, .obsidian-ai-settings-search-option) {
+		min-height: 44px;
+	}
+	.obsidian-ai-settings :is(.clickable-icon, .obsidian-ai-settings-advanced-toggle,
+		.obsidian-ai-settings-section-toggle,
+		.obsidian-ai-password-input-wrapper button, .obsidian-ai-api-key-control button) {
+		min-width: 44px;
+	}
+}
 
 
 .chat-sync-panel-v2 {
@@ -5849,15 +6156,16 @@
 .chat-model-switcher-dropdown {
 	position: fixed;
 	width: min(320px, calc(100vw - 16px));
-	min-width: min(260px, calc(100vw - 16px));
+	min-width: 0;
 	max-width: calc(100vw - 16px);
 	max-height: min(400px, calc(100vh - 16px));
-	overflow: hidden;
+	overflow: auto;
+	overscroll-behavior: contain;
 	box-sizing: border-box;
 	z-index: 10000;
 	background: var(--background-primary);
 	border: 1px solid var(--background-modifier-border);
-	border-radius: 6px;
+	border-radius: 16px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 	display: flex;
 	flex-direction: column;
@@ -6066,5 +6374,36 @@
 		height: 32px;
 		min-height: 32px;
 		padding: 3px;
+	}
+}
+
+/* Touch controls remain reachable even with the software keyboard open. */
+.chat-model-switcher-search,
+.chat-model-switcher-footer,
+.chat-model-switcher-back {
+	flex-shrink: 0;
+}
+.chat-model-switcher-item:focus-visible,
+.chat-model-switcher-refresh:focus-visible,
+.chat-model-switcher-back:focus-visible {
+	outline: 2px solid var(--interactive-accent);
+	outline-offset: -3px;
+}
+@media (pointer: coarse) {
+	.chat-model-switcher-trigger {
+		width: 44px;
+		min-width: 44px;
+		max-width: 44px;
+		height: 44px;
+		min-height: 44px;
+	}
+	.chat-model-switcher-item,
+	.chat-model-switcher-refresh,
+	.chat-model-switcher-back {
+		min-height: 44px;
+	}
+	.chat-model-switcher-search input {
+		min-height: 32px;
+		font-size: 16px;
 	}
 }

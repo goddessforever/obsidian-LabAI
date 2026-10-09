@@ -1,4 +1,5 @@
 import { Notice, Setting } from "obsidian";
+import { MANAGED_BUILD, MANAGED_UPDATE_MESSAGE } from "../managed-build";
 import ObsidianAIPlugin from "../main";
 
 export function renderUpdaterSection(
@@ -12,6 +13,10 @@ export function renderUpdaterSection(
 	});
 
 	section.createEl("h3", { text: "Updates" });
+	if (MANAGED_BUILD) {
+		section.createEl("p", { text: MANAGED_UPDATE_MESSAGE, cls: "setting-item-description" });
+		return;
+	}
 
 	const desc = section.createEl("p", { cls: "setting-item-description" });
 	desc.textContent =

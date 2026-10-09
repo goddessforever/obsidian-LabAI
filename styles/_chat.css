@@ -1,4 +1,7 @@
 .chat-panel {
+	container: labai-chat / inline-size;
+	min-width: 0;
+	border-radius: var(--auri-note-radius, 18px);
 	display: flex;
 	flex-direction: column;
 	height: 100%;
@@ -248,7 +251,7 @@
 	min-width: 36px;
 }
 
-@media (max-width: 480px) {
+@container labai-chat (max-width: 480px) {
 	.chat-action-bar {
 		padding-right: 6px;
 		padding-left: 6px;
@@ -330,14 +333,14 @@
 }
 
 /* Keep the passive profile summary compact below the interactive toolbar. */
-@media (max-width: 480px) {
+@container labai-chat (max-width: 480px) {
 	.chat-profile-chip {
 		max-width: 160px;
 		padding: 2px 6px;
 	}
 }
 
-@media (max-width: 360px) {
+@container labai-chat (max-width: 360px) {
 	.chat-profile-chip {
 		max-width: 132px;
 		padding: 2px 4px;
@@ -500,7 +503,7 @@
 }
 
 /* Mobile: wider bubbles, less padding */
-@media (max-width: 768px) {
+@container labai-chat (max-width: 768px) {
 	.chat-bubble {
 		max-width: 95%;
 		padding: 6px 8px;
@@ -1434,7 +1437,7 @@
 }
 
 /* Small screens: also always show */
-@media (max-width: 768px) {
+@container labai-chat (max-width: 768px) {
 	.message-actions-wrapper {
 		opacity: 1 !important;
 	}
@@ -1537,3 +1540,128 @@
 }
 
 /* ── Tool Call Notifications ────────────────────────────────────────────── */
+
+/* Pane-scoped Auri surfaces; retain native theme variables in standalone use. */
+.chat-panel .chat-action-bar {
+	overflow: visible;
+	flex-wrap: wrap;
+}
+.chat-panel .chat-action-bar-left {
+	flex-wrap: wrap;
+}
+.chat-panel .chat-textarea {
+	min-width: 0;
+}
+.chat-panel .chat-bubble {
+	border-radius: 16px;
+	overflow-wrap: anywhere;
+}
+.chat-panel .chat-bubble-user,
+.chat-panel .chat-send-btn,
+.chat-panel .chat-icon-btn.is-active {
+	background: var(--interactive-accent);
+	border-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+.chat-panel .chat-bubble-actions,
+.chat-panel .message-actions {
+	flex-wrap: wrap;
+}
+.chat-panel .chat-bubble:focus-within .message-actions-wrapper {
+	opacity: 1;
+}
+.chat-panel .chat-bubble:focus-within .chat-bubble-actions {
+	display: flex;
+}
+.chat-panel .labai-tab-strip {
+	position: relative;
+	min-width: 0;
+	flex-shrink: 0;
+	padding-inline: 24px;
+}
+.chat-panel .chat-session-tabs {
+	scrollbar-width: none;
+	padding: 6px 0;
+	border: 0;
+	background: transparent;
+}
+.chat-panel .chat-session-tabs::-webkit-scrollbar {
+	display: none;
+}
+.chat-panel .chat-session-tab {
+	border-radius: 12px;
+	border: 0;
+	max-width: 100%;
+	min-width: 0;
+}
+.chat-panel .chat-session-tab.is-active {
+	background: var(--background-modifier-hover);
+	box-shadow: 0 2px 8px #00000010;
+}
+.chat-panel .labai-tab-scroll {
+	position: absolute;
+	top: 6px;
+	bottom: 6px;
+	width: 24px;
+	padding: 0;
+	border: 0;
+	box-shadow: none;
+	background: transparent;
+	color: var(--text-muted);
+	opacity: 0.65;
+	display: grid;
+	place-items: center;
+}
+.chat-panel .labai-tab-scroll.is-left {
+	left: 0;
+}
+.chat-panel .labai-tab-scroll.is-right {
+	right: 0;
+}
+.chat-panel .labai-tab-scroll:hover,
+.chat-panel .labai-tab-scroll:focus-visible {
+	opacity: 1;
+}
+.labai-rename-session label {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.labai-rename-session input {
+	width: 100%;
+}
+.labai-rename-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 18px;
+}
+@media (pointer: coarse) {
+	.chat-panel
+		:is(
+			.chat-icon-btn,
+			.message-action-btn,
+			.chat-session-tab-close,
+			.chat-session-tab-select,
+			.chat-scroll-btn,
+			.chat-btn-small,
+			.chat-picker-tab
+		) {
+		min-width: 44px;
+		min-height: 44px;
+	}
+	.chat-panel .chat-action-bar-left > .chat-icon-btn,
+	.chat-panel .chat-action-bar-left .chat-council-trigger > .chat-icon-btn {
+		min-width: 44px;
+		min-height: 44px;
+	}
+	.chat-panel .chat-bubble-actions {
+		display: flex;
+	}
+	.chat-panel .labai-tab-strip {
+		padding-inline: 44px;
+	}
+	.chat-panel .labai-tab-scroll {
+		width: 44px;
+	}
+}

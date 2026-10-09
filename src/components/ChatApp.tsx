@@ -1090,6 +1090,7 @@ const ChatApp: React.FC<ChatAppProps> = ({
 			)}
 			{!ui.zenMode && (
 				<ChatTabBar
+					app={plugin.app}
 					sessions={sessions}
 					openSessionIds={openSessionIds}
 					activeSessionId={activeSessionId}
