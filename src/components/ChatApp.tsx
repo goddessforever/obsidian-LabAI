@@ -45,7 +45,8 @@ import { useSearch } from "../hooks/useSearch";
 import { useContextItems } from "../hooks/useContextItems";
 import { useChatRuntimeState } from "../hooks/useChatRuntimeState";
 import ActionBar from "./presentational/ActionBar";
-import ChatTabBar from "./ChatTabBar";
+import SessionDropdown from "./SessionDropdown";
+import { SessionTrash, TrashedSession } from "../storage/SessionTrash";
 import ChatMessages from "./ChatMessages";
 import ContextBar from "./presentational/ContextBar";
 import ChatInput from "./ChatInput";
@@ -98,6 +99,7 @@ const ChatApp: React.FC<ChatAppProps> = ({
 		setOpenSessionIds: setPersistedOpenSessionIds,
 		createNewSession,
 		renameSession,
+		deleteSession,
 		updateSessionMessages,
 		updateSessionContextItems,
 		manualRenameActiveSession,
@@ -494,7 +496,6 @@ const ChatApp: React.FC<ChatAppProps> = ({
 		handleCloseTab,
 		handleCloseOtherTabs,
 		handleCloseTabsToRight,
-		handleDeleteSession,
 		handleRenameSession,
 	} = useSessionActions({
 		plugin,
@@ -519,6 +520,38 @@ const ChatApp: React.FC<ChatAppProps> = ({
 		setOpenSessionIds: setPersistedOpenSessionIds,
 		getModelOverrides,
 	});
+
+	const trashStore = useMemo(() => new SessionTrash(plugin), [plugin]);
+	const [trashedSessions, setTrashedSessions] = useState<TrashedSession[]>([]);
+	useEffect(() => { void trashStore.list().then(setTrashedSessions).catch(() => new Notice("Could not load deleted chats")); }, [trashStore]);
+	const handleDeleteSession = async (id: string) => {
+		const session = sessionsRef.current.find(s => s.id === id);
+		if (!session) return;
+		abortRuntime(id);
+		const entries = await trashStore.add(session);
+		setTrashedSessions(entries);
+		// Cancel pending autosaves through state before awaiting disk I/O, so an
+		// old autosave cannot reinsert the chat while its tombstone is written.
+		clearRuntime(id);
+		setOpenSessionIds(ids => ids.filter(s => s !== id));
+		deleteSession(id);
+		// Save an explicit tombstone: omitting a session alone preserves it on disk.
+		await plugin.saveChatData({ sessions: sessionsRef.current.filter(s => s.id !== id), activeSessionId: activeSessionIdRef.current === id ? null : activeSessionIdRef.current, openSessionIds: openSessionIds.filter(s => s !== id), deletedSessionIds: [id] });
+		window.dispatchEvent(new CustomEvent("obsidian-ai:session-deleted", { detail: { sessionId: id } }));
+	};
+	const handleRecoverSession = async (id: string) => {
+		const entry = (await trashStore.list()).find(e => e.session.id === id);
+		if (!entry) return;
+		// A fresh ID prevents a remote deletion tombstone from deleting the recovered chat.
+		const recovered = { ...entry.session, id: makeId(), updatedAt: Date.now(), hydrated: true };
+		const next = [...sessionsRef.current, recovered];
+		await plugin.saveChatData({ sessions: next, activeSessionId: recovered.id, openSessionIds: [...openSessionIds, recovered.id] });
+		sessionsRef.current = next;
+		setSessions(next);
+		setActiveSessionId(recovered.id);
+		setOpenSessionIds(ids => [...ids, recovered.id]);
+		setTrashedSessions(await trashStore.remove(id));
+	};
 
 	// The toolbar is shared visually, but profile selection belongs to the
 	// newly active session. This is deliberately one-way: writing picker changes
@@ -1046,6 +1079,7 @@ const ChatApp: React.FC<ChatAppProps> = ({
 		<div className={`chat-panel${ui.zenMode ? " is-zen" : ""}`}>
 			{!ui.zenMode && (
 				<ChatToolbar
+					sessionMenu={<SessionDropdown sessions={sessions} trash={trashedSessions} activeSessionId={activeSessionId} onSelect={handleLoadSession} onDelete={handleDeleteSession} onRecover={handleRecoverSession} onOpen={async () => setTrashedSessions(await trashStore.list())} />}
 					plugin={plugin}
 					resolvedProfile={resolvedProfile}
 					selectedAgents={selectedAgents}
@@ -1086,20 +1120,6 @@ const ChatApp: React.FC<ChatAppProps> = ({
 					onToggleRemoteUserDropdown={ui.toggleRemoteUserDropdown}
 					onToggleProfile={ui.toggleProfile}
 					onToggleRemoteUser={ui.toggleRemoteUser}
-				/>
-			)}
-			{!ui.zenMode && (
-				<ChatTabBar
-					app={plugin.app}
-					sessions={sessions}
-					openSessionIds={openSessionIds}
-					activeSessionId={activeSessionId}
-					tabTitleWidth={plugin.settings.chatTabTitleWidth}
-					onSelect={(sessionId) => openSessionInTab(sessionId)}
-					onClose={handleCloseTab}
-					onCloseOthers={handleCloseOtherTabs}
-					onCloseToRight={handleCloseTabsToRight}
-					onRename={handleRenameSession}
 				/>
 			)}
 			{!ui.zenMode && searchVisible && (
@@ -1227,7 +1247,7 @@ const ChatApp: React.FC<ChatAppProps> = ({
 				showExportModal={ui.showExportModal}
 				showContextPicker={ui.showContextPicker}
 				onLoadSession={handleLoadSession}
-				onDeleteSession={handleDeleteSession}
+				onDeleteSession={(id) => { void handleDeleteSession(id).catch(e => new Notice(String(e))); }}
 				onRenameSession={handleRenameSession}
 				onCloseSessionPicker={() => ui.setShowSessionPicker(false)}
 				onCloseExportModal={() => ui.setShowExportModal(false)}

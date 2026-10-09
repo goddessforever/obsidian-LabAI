@@ -410,7 +410,7 @@ export const ModelSwitcher: React.FC<ModelSwitcherProps> = ({
 	// Trigger label
 	const activeModelCount = Math.max(1, selectedProfileIds.size);
 	const currentModel = isMultiAgent ? activeProfile.model : selectedModel;
-	const triggerLabel = String(activeModelCount);
+	const triggerLabel = isMultiAgent ? `${activeModelCount} models` : `${profile.provider} · ${currentModel}`;
 	const toggleOpen = () => {
 		setIsOpen((prev) => {
 			if (prev) {

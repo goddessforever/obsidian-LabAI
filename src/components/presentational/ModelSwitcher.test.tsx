@@ -132,7 +132,7 @@ describe("ModelSwitcher", () => {
 		);
 
 		const trigger = screen.getByTestId("model-switcher-trigger");
-		expect(trigger.textContent).toBe("1");
+		expect(trigger.textContent).toBe("openrouter · openai/gpt-oss-120b");
 		expect(trigger.getAttribute("title")).toContain("openrouter");
 		expect(trigger.getAttribute("title")).toContain("openai/gpt-oss-120b");
 		expect(trigger.getAttribute("aria-label")).toContain("Change model");
@@ -170,7 +170,7 @@ describe("ModelSwitcher", () => {
 			expect(plugin.settings.providerProfiles[0].model).toBe("gpt-4o");
 		});
 		expect(screen.getByTestId("model-switcher-trigger").textContent).toBe(
-			"1",
+			"openrouter · gpt-4o",
 		);
 	});
 

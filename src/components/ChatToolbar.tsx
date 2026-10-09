@@ -3,7 +3,7 @@ import type { ChatPluginLike } from "../views/ObsidianAIChatView";
 import type { ProviderProfile } from "../settings";
 import { getAgentColor } from "../lib/agentVisuals";
 import ActionBar from "./presentational/ActionBar";
-import ProfileIndicator from "./presentational/ProfileIndicator";
+
 
 interface AgentChip {
 	id: string;
@@ -13,6 +13,7 @@ interface AgentChip {
 }
 
 interface ChatToolbarProps {
+	sessionMenu?: React.ReactNode;
 	plugin: ChatPluginLike;
 	resolvedProfile: ProviderProfile;
 	selectedAgents: AgentChip[];
@@ -54,6 +55,7 @@ interface ChatToolbarProps {
 }
 
 const ChatToolbar: React.FC<ChatToolbarProps> = ({
+	sessionMenu,
 	plugin,
 	resolvedProfile,
 	selectedAgents,
@@ -101,6 +103,7 @@ const ChatToolbar: React.FC<ChatToolbarProps> = ({
 		<>
 			<div className="chat-action-bar-wrapper" data-testid="chat-toolbar">
 				<ActionBar
+					sessionMenu={sessionMenu}
 					onNewChat={onNewChat}
 					onLoadChat={onLoadChat}
 					onExportChat={onExportChat}
@@ -224,44 +227,6 @@ const ChatToolbar: React.FC<ChatToolbarProps> = ({
 					</div>
 				)}
 			</div>
-			{(selectedAgents.length > 0 || connectedUsers.length > 0) && (
-				<div className="chat-participant-bar">
-					{selectedAgents.map((p) =>
-						plugin.settings.providerProfiles.find(
-							(profile) => profile.id === p.id,
-						) ? (
-							<ProfileIndicator
-								key={p.id}
-								profile={
-									p.profile ??
-									plugin.settings.providerProfiles.find(
-										(profile) => profile.id === p.id,
-									)!
-								}
-							/>
-						) : (
-							<span
-								key={p.id}
-								className="chat-participant-chip"
-								style={{ color: p.color }}
-							>
-								● {p.name}
-							</span>
-						),
-					)}
-					{connectedUsers.map((user) => (
-						<span
-							key={user}
-							className="chat-participant-chip chat-participant-chip-remote"
-						>
-							<span className="chat-participant-dot-online">
-								●
-							</span>{" "}
-							{user}
-						</span>
-					))}
-				</div>
-			)}
 		</>
 	);
 };
