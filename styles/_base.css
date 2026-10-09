@@ -128,6 +128,12 @@
 
 .obsidian-ai-settings {
 	--obsidian-ai-accent: var(--interactive-accent, #0d9488);
+	--labai-settings-radius: var(--auri-note-radius, 18px);
+	--labai-settings-shadow: 0 6px 20px rgb(0 0 0 / 8%);
+	container: labai-settings / inline-size;
+	min-width: 0;
+	font-family: var(--font-interface);
+	overflow-wrap: anywhere;
 	/* The settings tab inherits Obsidian's generous default gutters. */
 	box-sizing: border-box;
 	width: 100%;
@@ -462,7 +468,7 @@
 /* Keep the description and control columns usable at every panel width. */
 .obsidian-ai-settings-section .setting-item {
 	display: grid;
-	grid-template-columns: minmax(240px, 1fr) minmax(300px, 1.1fr);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
 	column-gap: 24px;
 	align-items: start;
 }
@@ -484,7 +490,7 @@
 	max-width: 100%;
 }
 
-@media (max-width: 760px) {
+@container labai-settings (max-width: 760px) {
 	.obsidian-ai-settings-section .setting-item {
 		display: block;
 	}
@@ -548,7 +554,7 @@
 	justify-content: flex-end;
 }
 
-@media (max-width: 760px) {
+@container labai-settings (max-width: 760px) {
 	#obsidian-ai-settings-debug-mode > .obsidian-ai-settings-section-body > .setting-item,
 	.obsidian-ai-debug-telemetry-group .setting-item {
 		display: flex;
@@ -577,7 +583,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-	min-width: 320px;
+	min-width: 0;
 	width: 100%;
 }
 
@@ -616,8 +622,8 @@
 }
 
 .obsidian-ai-settings-model-item.is-active {
-	background: #0d9488;
-	color: #ffffff;
+	background: var(--obsidian-ai-accent);
+	color: var(--text-on-accent);
 	font-weight: 600;
 }
 
@@ -653,7 +659,7 @@
 	color: var(--text-normal);
 }
 
-@media (max-width: 900px) {
+@container labai-settings (max-width: 900px) {
 	.obsidian-ai-settings-hero {
 		grid-template-columns: 1fr;
 	}
@@ -671,7 +677,7 @@
 	}
 }
 
-@media (max-width: 620px) {
+@container labai-settings (max-width: 620px) {
 	.obsidian-ai-settings-hero-meta {
 		grid-template-columns: 1fr;
 	}
@@ -681,14 +687,11 @@
 	}
 }
 
-@media (max-width: 420px) {
-	.obsidian-ai-settings {
-		padding-inline: 8px;
-	}
-
-	.modal.mod-settings .vertical-tab-content.obsidian-ai-settings,
-	.modal.mod-settings .setting-tab-content.obsidian-ai-settings {
-		padding-inline: 8px !important;
+@container labai-settings (max-width: 420px) {
+	.obsidian-ai-settings-section,
+	.obsidian-ai-settings-discovery,
+	.obsidian-ai-settings-hero {
+		padding: 12px;
 	}
 
 	.obsidian-ai-settings-metrics {

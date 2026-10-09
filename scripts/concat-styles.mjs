@@ -11,6 +11,7 @@ const partials = [
 	'settings',
 	'sync',
 	'model-switcher',
+	'session-dropdown',
 ];
 
 const contents = await Promise.all(

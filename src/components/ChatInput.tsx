@@ -14,6 +14,7 @@ import {
 import { ChatPluginLike } from "../views/ObsidianAIChatView";
 
 interface ChatInputProps {
+	composerControls?: React.ReactNode;
 	app: App;
 	plugin: ChatPluginLike;
 	contextItems: ContextItem[];
@@ -127,6 +128,7 @@ const SLASH_COMMANDS: AutoCandidate[] = [
 ];
 
 const ChatInput: React.FC<ChatInputProps> = ({
+	composerControls,
 	app,
 	plugin,
 	contextItems,
@@ -872,6 +874,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 				<div className="chat-input-toolbar">
 					{/* Left: attachment chips + attach button */}
 					<div className="chat-input-toolbar-left">
+						{composerControls}
 						{attachments.map((att) => (
 							<div key={att.id} className="chat-attachment-chip">
 								<span className="chat-attachment-icon">

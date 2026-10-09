@@ -3,9 +3,10 @@ import { Menu } from "obsidian";
 import { ChatPluginLike } from "../../views/ObsidianAIChatView";
 import type { ProviderProfile } from "../../settings";
 import ObsidianIcon from "../ObsidianIcon";
-import ModelSwitcher from "./ModelSwitcher";
+
 
 interface ActionBarProps {
+	sessionMenu?: React.ReactNode;
 	onNewChat: () => void;
 	onLoadChat: () => void;
 	onExportChat: () => void;
@@ -38,6 +39,7 @@ interface ActionBarProps {
 }
 
 const ActionBar: React.FC<ActionBarProps> = ({
+	sessionMenu,
 	onNewChat,
 	onLoadChat,
 	onExportChat,
@@ -153,11 +155,15 @@ const ActionBar: React.FC<ActionBarProps> = ({
 				.setSection("data")
 				.onClick(() => onExportChat()),
 		);
+		if (onToggleSearch) menu.addItem(item => item.setTitle(searchVisible ? "Hide chat search" : "Search chats").setIcon("search").onClick(onToggleSearch));
+		menu.addItem(item => item.setTitle("Sync with remote").setIcon("sync").onClick(onOpenSync));
+		if (onToggleZenMode) menu.addItem(item => item.setTitle(zenMode ? "Exit zen mode" : "Zen mode").setIcon("maximize").onClick(onToggleZenMode));
+		menu.addItem(item => item.setTitle("Settings").setIcon("settings").onClick(openSettings));
 		menu.showAtMouseEvent(event.nativeEvent as MouseEvent);
 	};
 
 	return (
-		<div className="chat-action-bar">
+		<div className="chat-action-bar" onWheel={event => { const el = event.currentTarget; if (el.scrollWidth > el.clientWidth && Math.abs(event.deltaX) < 1) el.scrollLeft += event.deltaY; }}>
 			<div className="chat-action-bar-left">
 				<button
 					className="chat-btn chat-icon-btn"
@@ -168,6 +174,7 @@ const ActionBar: React.FC<ActionBarProps> = ({
 				>
 					<ObsidianIcon icon="plus" size={17} />
 				</button>
+				{sessionMenu ?? (
 				<button
 					data-testid="history-button"
 					className="chat-btn chat-icon-btn"
@@ -183,29 +190,7 @@ const ActionBar: React.FC<ActionBarProps> = ({
 				>
 					<ObsidianIcon icon="history" size={17} />
 				</button>
-				{onToggleSearch && (
-					<button
-						className={`chat-btn chat-icon-btn ${searchVisible ? "is-active" : ""}`}
-						onClick={onToggleSearch}
-						title={searchVisible ? "Hide search" : "Search chats"}
-						aria-label={
-							searchVisible ? "Hide chat search" : "Search chats"
-						}
-						type="button"
-					>
-						<ObsidianIcon icon="search" size={17} />
-					</button>
 				)}
-
-				{/* Keep the active provider/model control immediately before Agents. */}
-				<ModelSwitcher
-					profile={profile}
-					plugin={plugin}
-					selectedProfileIds={selectedProfileIds}
-					resolvedProfiles={resolvedSelectedProfiles}
-					modelOverrides={modelOverrides}
-					onModelChange={onModelChange}
-				/>
 
 				{onToggleParticipantDropdown && (
 					<div className="chat-council-trigger">
@@ -227,36 +212,6 @@ const ActionBar: React.FC<ActionBarProps> = ({
 						</button>
 					</div>
 				)}
-				<button
-					className="chat-btn chat-icon-btn"
-					onClick={onOpenSync}
-					title="Sync with remote"
-					aria-label="Sync with remote"
-					type="button"
-				>
-					<ObsidianIcon icon="sync" size={17} />
-				</button>
-				{onToggleZenMode && (
-					<button
-						className={`chat-btn chat-icon-btn ${zenMode ? "is-active" : ""}`}
-						onClick={onToggleZenMode}
-						title={zenMode ? "Exit zen mode" : "Zen mode"}
-						aria-label={zenMode ? "Exit zen mode" : "Zen mode"}
-						aria-pressed={zenMode ?? false}
-						type="button"
-					>
-						<ObsidianIcon icon="maximize" size={17} />
-					</button>
-				)}
-				<button
-					className="chat-btn chat-icon-btn"
-					onClick={openSettings}
-					title="Settings"
-					aria-label="Settings"
-					type="button"
-				>
-					<ObsidianIcon icon="settings" size={17} />
-				</button>
 				<button
 					className="chat-btn chat-icon-btn"
 					onClick={showMoreMenu}

@@ -45,7 +45,7 @@ const baseProps = {
 };
 
 describe("ActionBar participant badges", () => {
-	it("orders the model selector before Agents and keeps primary actions visible", () => {
+	it("keeps navigation compact without the composer model selector", () => {
 		const { container } = render(
 			<ActionBar {...baseProps} participantCount={1} />,
 		);
@@ -57,37 +57,11 @@ describe("ActionBar participant badges", () => {
 		expect((controls[1] as HTMLButtonElement).title).toBe(
 			"Load previous session",
 		);
-		expect((controls[2] as HTMLButtonElement).title).toBe("Search chats");
-		expect(controls[3].classList.contains("chat-model-switcher")).toBe(
-			true,
-		);
-		expect(controls[4].classList.contains("chat-council-trigger")).toBe(
-			true,
-		);
-		expect(
-			(controls[5] as HTMLButtonElement).getAttribute("aria-label"),
-		).toBe("Sync with remote");
-		expect(
-			(controls[6] as HTMLButtonElement).getAttribute("aria-label"),
-		).toBe("Zen mode");
-		expect(
-			(controls[7] as HTMLButtonElement).getAttribute("aria-label"),
-		).toBe("Settings");
-		expect(
-			(controls[8] as HTMLButtonElement).getAttribute("aria-label"),
-		).toBe("More actions");
-		expect(container.querySelector(".chat-action-bar-center")).toBeNull();
-		fireEvent.click(controls[8]);
-	});
-
-	it("routes Sync and Zen mode from their toolbar buttons", () => {
-		const { getByRole } = render(<ActionBar {...baseProps} />);
-
-		fireEvent.click(getByRole("button", { name: "Sync with remote" }));
-		fireEvent.click(getByRole("button", { name: "Zen mode" }));
-
-		expect(baseProps.onOpenSync).toHaveBeenCalledOnce();
-		expect(baseProps.onToggleZenMode).toHaveBeenCalledOnce();
+		expect(container.querySelector(".chat-model-switcher")).toBeNull();
+		expect(controls[2].classList.contains("chat-council-trigger")).toBe(true);
+		expect((controls[3] as HTMLButtonElement).getAttribute("aria-label")).toBe("More actions");
+		expect(controls).toHaveLength(4);
+		fireEvent.click(controls[3]);
 	});
 
 	it.each([0, 1, 2])(

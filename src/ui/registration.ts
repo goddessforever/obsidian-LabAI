@@ -1,3 +1,4 @@
+import { MANAGED_BUILD, MANAGED_UPDATE_MESSAGE } from "../managed-build";
 // src/ui/registration.ts
 import { MarkdownView, Notice, WorkspaceLeaf } from "obsidian";
 import { EditorView } from "@codemirror/view";
@@ -186,6 +187,7 @@ export function registerSettingsTab(plugin: ObsidianAIPlugin): void {
 }
 
 export function registerUpdater(plugin: ObsidianAIPlugin): void {
+	if (MANAGED_BUILD) return;
 	// Initialize auto-updater (pass file logger so diagnostics go to debug.log)
 	plugin._updater = new PluginUpdater(
 		plugin.app,
@@ -246,6 +248,7 @@ export async function activateChatViewOnce(
 		await leaf.setViewState({ type: CHAT_VIEWTYPE, active: true });
 	}
 	workspace.setActiveLeaf(leaf, { focus: true });
+	void workspace.revealLeaf(leaf);
 }
 
 /** Keep the focused chat leaf when possible and remove stale duplicate leaves. */
@@ -353,6 +356,7 @@ export async function checkForUpdates(
 }
 
 export async function showAvailableBuilds(plugin: ObsidianAIPlugin) {
+	if (MANAGED_BUILD) { new Notice(MANAGED_UPDATE_MESSAGE); return; }
 	if (!plugin._updater) return;
 
 	const modal = new AvailableBuildsModal(

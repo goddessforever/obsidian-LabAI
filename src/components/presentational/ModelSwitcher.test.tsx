@@ -1,5 +1,11 @@
 import React from "react";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+	act,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+} from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import ModelSwitcher from "./ModelSwitcher";
 import type { ProviderProfile } from "../../settings";
@@ -32,6 +38,85 @@ const makePlugin = (profiles: ProviderProfile[], recentModels = {}) => ({
 });
 
 describe("ModelSwitcher", () => {
+	it("keeps the menu inside the visible viewport as the keyboard opens", () => {
+		const viewport = new EventTarget();
+		Object.assign(viewport, {
+			width: 320,
+			height: 600,
+			offsetLeft: 0,
+			offsetTop: 0,
+		});
+		const original = Object.getOwnPropertyDescriptor(
+			window,
+			"visualViewport",
+		);
+		Object.defineProperty(window, "visualViewport", {
+			configurable: true,
+			value: viewport,
+		});
+		try {
+			const profile = makeProfile();
+			const view = render(
+				<ModelSwitcher
+					profile={profile}
+					plugin={makePlugin([profile]) as any}
+					selectedProfileIds={new Set([profile.id])}
+				/>,
+			);
+			const trigger = screen.getByTestId("model-switcher-trigger");
+			vi.spyOn(trigger, "getBoundingClientRect").mockReturnValue({
+				left: 290,
+				top: 510,
+				bottom: 550,
+			} as DOMRect);
+			fireEvent.click(trigger);
+			const menu = screen.getByRole("menu");
+			expect(menu.style.width).toBe("304px");
+			expect(menu.style.left).toBe("8px");
+			Object.assign(viewport, { height: 240, offsetTop: 40 });
+			act(() => viewport.dispatchEvent(new Event("resize")));
+			expect(menu.style.top).toBe("48px");
+			expect(menu.style.maxHeight).toBe("224px");
+			fireEvent.keyDown(document, { key: "Escape" });
+			expect(screen.queryByRole("menu")).toBeNull();
+			expect(document.activeElement).toBe(trigger);
+			view.unmount();
+		} finally {
+			if (original)
+				Object.defineProperty(window, "visualViewport", original);
+			else delete (window as any).visualViewport;
+		}
+	});
+
+	it("portals into the owning document and closes from that document", () => {
+		const iframe = document.createElement("iframe");
+		document.body.appendChild(iframe);
+		const doc = iframe.contentDocument!;
+		const host = doc.createElement("div");
+		doc.body.appendChild(host);
+		const profile = makeProfile();
+		const view = render(
+			<ModelSwitcher
+				profile={profile}
+				plugin={makePlugin([profile]) as any}
+				selectedProfileIds={new Set([profile.id])}
+			/>,
+			{ container: host },
+		);
+		try {
+			fireEvent.click(host.querySelector("button")!);
+			expect(doc.body.querySelector('[role="menu"]')?.parentElement).toBe(
+				doc.body,
+			);
+			expect(document.body.querySelector('[role="menu"]')).toBeNull();
+			fireEvent.pointerDown(doc.body);
+			expect(doc.body.querySelector('[role="menu"]')).toBeNull();
+		} finally {
+			view.unmount();
+			iframe.remove();
+		}
+	});
+
 	it("keeps the toolbar trigger compact and separates recent models from all models", () => {
 		const profile = makeProfile();
 		const plugin = makePlugin([profile], {
@@ -47,7 +132,7 @@ describe("ModelSwitcher", () => {
 		);
 
 		const trigger = screen.getByTestId("model-switcher-trigger");
-		expect(trigger.textContent).toBe("1");
+		expect(trigger.textContent).toBe("openrouter · openai/gpt-oss-120b");
 		expect(trigger.getAttribute("title")).toContain("openrouter");
 		expect(trigger.getAttribute("title")).toContain("openai/gpt-oss-120b");
 		expect(trigger.getAttribute("aria-label")).toContain("Change model");
@@ -85,7 +170,7 @@ describe("ModelSwitcher", () => {
 			expect(plugin.settings.providerProfiles[0].model).toBe("gpt-4o");
 		});
 		expect(screen.getByTestId("model-switcher-trigger").textContent).toBe(
-			"1",
+			"openrouter · gpt-4o",
 		);
 	});
 

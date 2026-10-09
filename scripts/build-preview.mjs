@@ -1,5 +1,6 @@
 import { build } from "esbuild";
 import { mkdir, cp } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 
 await mkdir("preview-dist", { recursive: true });
 await build({
@@ -10,8 +11,7 @@ await build({
 	outfile: "preview-dist/preview.js",
 	loader: { ".tsx": "tsx", ".ts": "ts" },
 	alias: {
-		obsidian: new URL("../src/preview/obsidianStub.ts", import.meta.url)
-			.pathname,
+		obsidian: fileURLToPath(new URL("../src/preview/obsidianStub.ts", import.meta.url)),
 	},
 	sourcemap: true,
 });
